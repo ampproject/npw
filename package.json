@@ -23,7 +23,7 @@
     "url": "https://github.com/ampproject/npw/issues"
   },
   "engines": {
-    "node": ">= 14.0.0"
+    "node": ">= 10.0.0"
   },
   "homepage": "https://github.com/ampproject/npw#readme",
   "devDependencies": {

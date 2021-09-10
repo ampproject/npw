@@ -1,13 +1,22 @@
 #!/usr/bin/env node
 'use strict';
 
-const { promises: fs } = require('fs');
+const fs = require('fs');
 const path = require('path');
 const { spawn: _spawn } = require('child_process');
 
+function readFile(path, opts) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, opts, (err, data) => {
+      if (err) reject(err);
+      else resolve(data);
+    });
+  });
+}
+
 async function readPackageJson(dir) {
   try {
-    const contents = await fs.readFile(path.join(dir, 'package.json'), 'utf8');
+    const contents = await readFile(path.join(dir, 'package.json'), 'utf8');
     return JSON.parse(contents);
   } catch {
     return null;
