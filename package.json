@@ -1,0 +1,33 @@
+{
+  "name": "@ampproject/npw",
+  "version": "1.0.0",
+  "description": "A workspace-aware npm wrapper to aid with developing in monorepos",
+  "main": "src/cli.js",
+  "bin": {
+    "npw": "bin/npw.js"
+  },
+  "scripts": {
+    "lint": "prettier --write src bin",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ampproject/npw.git"
+  },
+  "keywords": [
+    "npm",
+    "workspace"
+  ],
+  "author": "The AMP HTML Authors",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ampproject/npw/issues"
+  },
+  "engines": {
+    "node": ">= 14.0.0"
+  },
+  "homepage": "https://github.com/ampproject/npw#readme",
+  "devDependencies": {
+    "prettier": "2.4.0"
+  }
+}
