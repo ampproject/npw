@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
+const { readFile: _readFile } = require('fs');
+const { dirname, join, relative } = require('path');
 const { spawn: _spawn } = require('child_process');
 
 function readFile(path, opts) {
   return new Promise((resolve, reject) => {
-    fs.readFile(path, opts, (err, data) => {
+    _readFile(path, opts, (err, data) => {
       if (err) reject(err);
       else resolve(data);
     });
@@ -16,7 +16,7 @@ function readFile(path, opts) {
 
 async function readPackageJson(dir) {
   try {
-    const contents = await readFile(path.join(dir, 'package.json'), 'utf8');
+    const contents = await readFile(join(dir, 'package.json'), 'utf8');
     return JSON.parse(contents);
   } catch {
     return null;
@@ -25,7 +25,7 @@ async function readPackageJson(dir) {
 
 async function findWorkspaceRoot(cwd) {
   let dir = cwd;
-  for (let prevDir; dir != prevDir; prevDir = dir, dir = path.dirname(dir)) {
+  for (let prevDir; dir != prevDir; prevDir = dir, dir = dirname(dir)) {
     const json = await readPackageJson(dir);
     if (json == null || !json.workspaces) continue;
 
@@ -100,7 +100,7 @@ async function npw() {
 
   const args = process.argv.slice(2);
   if (root !== cwd) {
-    const workspace = path.relative(root, cwd);
+    const workspace = relative(root, cwd);
     args.splice(1, 0, '-w', workspace);
   }
 
