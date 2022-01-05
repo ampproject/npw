@@ -1,6 +1,6 @@
 {
   "name": "@ampproject/npw",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A workspace-aware npm wrapper to aid with developing in monorepos",
   "bin": {
     "npw": "bin/npw.js"
