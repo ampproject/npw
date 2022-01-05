@@ -89,7 +89,56 @@ async function spawn(cmd, args, opts) {
   }
 }
 
+function parseArgs() {
+  const {argv} = process;
+  let quiet = false;
+  let shell = process.platform === 'win32';
+
+  let i = 2;
+  for (; i < argv.length; i++) {
+    const arg = argv[i];
+
+    if (arg === '--') {
+      i++;
+      break;
+    }
+
+    if (arg === '--quiet') {
+      quiet = true;
+      continue;
+    }
+
+    if (arg === '--shell') {
+      shell = argv[++i];
+      continue;
+    } else if (arg.startsWith('--shell=')) {
+      shell = arg.slice('--shell='.length);
+      continue;
+    }
+
+    // Unknown arg
+    break;
+  }
+
+  return {
+    quiet,
+    shell,
+    args: argv.slice(i),
+  };
+}
+
 async function npw() {
+  const {quiet, shell, args} = parseArgs();
+  if (args.length === 0) {
+    console.error('Usage:');
+    console.error('npw [--quiet] [--shell=...] [...]');
+    console.error('');
+    console.error('Options:');
+    console.error('    --quiet           silence output from npw');
+    console.error('    --shell shell     a custom shell to spawn npm inside');
+    process.exit(1);
+  }
+
   const cwd = process.cwd();
   const root = await findWorkspaceRoot(cwd);
 
@@ -98,16 +147,20 @@ async function npw() {
     process.exit(1);
   }
 
-  const args = process.argv.slice(2);
-  if (root !== cwd) {
+
+  if (root === cwd) {
+    if (!quiet) console.log('Found workspace root at current directory');
+  } else {
     const workspace = relative(root, cwd);
     args.splice(1, 0, '-w', workspace);
+    if (!quiet) console.log(`Executing in workspace ${workspace}`);
   }
 
   try {
     await spawn('npm', args, {
       cwd: root,
       env: process.env,
+      shell: shell,
       stdio: 'inherit',
     });
   } catch (e) {
